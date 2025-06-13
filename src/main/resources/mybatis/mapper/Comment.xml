@@ -1,0 +1,28 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boardv4.repository.CommentRepository">
+    <insert id="insert" parameterType="Comment" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO comment(post_id, member_id, content, create_at)
+        VALUES (#{postId}, #{memberId}, #{content}, #{createAt})
+    </insert>
+
+    <delete id="delete" parameterType="Long">
+        DELETE
+        FROM comment
+        WHERE id = #{commentId}
+    </delete>
+
+    <select id="findResponseListByPostId" parameterType="Long" resultType="com.boardv4.dto.comment.CommentResponse">
+        SELECT c.id, m.username, m.name, c.content, c.create_at
+        FROM comment c JOIN member m
+            ON c.member_id = m.id
+        WHERE post_id = #{postId}
+        order by create_at;
+    </select>
+
+    <select id="findById" parameterType="Long" resultType="Comment">
+        SELECT *
+        FROM comment
+        WHERE id = #{commentId}
+    </select>
+</mapper>

@@ -1,0 +1,51 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boardv4.repository.PostRepository">
+    <select id="findById" parameterType="Long" resultType="Post">
+        SELECT *
+        FROM post
+        WHERE id = #{postId}
+    </select>
+
+    <insert id="insert" parameterType="Post" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO post(member_id, board_id, category_id, subject, content, view_count, create_at, deleted, pinned)
+        VALUES (#{memberId}, #{boardId}, #{categoryId}, #{subject},
+                #{content}, #{viewCount}, #{createAt}, #{deleted}, #{pinned})
+    </insert>
+
+    <update id="update" parameterType="Post">
+        UPDATE post
+        SET category_id = #{categoryId},
+            subject     = #{subject},
+            content     = #{content},
+            pinned      = #{pinned}
+        WHERE id = #{id}
+    </update>
+
+    <select id="findViewCountById" parameterType="Long" resultType="Integer">
+        SELECT view_count
+        FROM post
+        WHERE id = #{postId};
+    </select>
+
+    <update id="softDelete">
+        UPDATE post
+        SET subject   = #{deletedSubject},
+            content   = #{deletedContent},
+            deleted   = true
+        WHERE id = #{postId}
+    </update>
+
+    <delete id="hardDelete">
+        DELETE
+        FROM post
+        WHERE id = #{postId}
+    </delete>
+
+    <update id="increaseViewCount" parameterType="Long">
+        UPDATE post
+        SET view_count = view_count + 1
+        WHERE id = #{postId}
+    </update>
+
+</mapper>

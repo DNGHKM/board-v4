@@ -1,0 +1,29 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boardv4.repository.QnaRepository">
+    <select id="findById" parameterType="Long" resultType="Qna">
+        SELECT *
+        FROM qna
+        WHERE id = #{qnaId}
+    </select>
+
+    <insert id="insert" parameterType="Qna" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO qna(writer_id, subject, content, question_at, secret, password, view_count)
+            VALUE (#{writerId}, #{subject}, #{content}, #{questionAt}, #{secret}, #{password}, #{viewCount})
+    </insert>
+
+    <update id="update" parameterType="Qna">
+        UPDATE qna
+        SET subject  = #{subject},
+            content  = #{content},
+            secret   = #{secret},
+            password = #{password}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete">
+        DELETE
+        FROM qna
+        WHERE id = #{qnaId}
+    </delete>
+</mapper>

@@ -1,0 +1,21 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boardv4.repository.MemberRepository">
+    <select id="findById" parameterType="Long" resultType="Member">
+        SELECT *
+        FROM member
+        WHERE id = #{id}
+    </select>
+
+    <select id="findByUsername" parameterType="String" resultType="Member">
+        SELECT *
+        FROM member
+        WHERE username = #{username}
+    </select>
+
+    <insert id="insert">
+        INSERT INTO member(username, name, password, role)
+        VALUES (#{username}, #{name}, #{password}, #{role})
+    </insert>
+
+</mapper>
