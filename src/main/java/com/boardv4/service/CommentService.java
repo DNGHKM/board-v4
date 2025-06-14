@@ -41,6 +41,7 @@ public class CommentService {
         (댓글 가져오기 쿼리 1회, 사용자 이름 Map 반환 쿼리 1회)
         --
         개선 2) 위 방법보다 차라리 Repository에서 바로 DTO를 구성하는게 낫겠다는 판단이 들어 해당 방법으로 개선 (쿼리 1회)
+        * entity 확장?
      */
 
     //    public List<CommentResponse> getCommentsByPostId(Long postId) {

@@ -16,6 +16,7 @@ public class MemberService {
                 .orElseThrow(MemberNotFoundException::new);
     }
 
+    //TODO 애초에 사용자만 쿼리단에서 가져오기?
     public Member getMemberByUsername(String username) {
         return memberRepository.findByUsername(username)
                 .orElseThrow(MemberNotFoundException::new);
@@ -32,7 +33,7 @@ public class MemberService {
             throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
         }
 
-        // TODO 사용 불가 목록 검사 -> DB에 별도로 관리?
+        // TODO 사용 불가 목록 검사 -> DB에 별도로 관리 또는 프로퍼티 파일
         if (isForbiddenUsername(username)) {
             throw new IllegalArgumentException("사용할 수 없는 아이디입니다.");
         }

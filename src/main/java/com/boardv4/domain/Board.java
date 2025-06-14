@@ -14,7 +14,7 @@ public class Board {
     private String korName;
     private boolean allowComment;
     private boolean allowPinned;
-    private boolean allowSecret;
+    private boolean allowSecret; //TODO 지우기
     private boolean writeAdminOnly;
     private Integer newDay;
     private FileType fileType;
