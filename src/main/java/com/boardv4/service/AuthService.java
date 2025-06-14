@@ -22,7 +22,7 @@ public class AuthService {
             throw new IllegalStateException("관리자 계정은 로그인할 수 없습니다.");
         }
 
-        PasswordUtil.validatePassword(member.getPassword(), inputPassword);
+        PasswordUtil.validatePassword(inputPassword, member.getPassword());
 
         return jwtUtil.generateToken(member.getUsername());
     }
