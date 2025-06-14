@@ -1,6 +1,7 @@
 package com.boardv4.service;
 
 import com.boardv4.domain.Member;
+import com.boardv4.exception.base.FieldValidationException;
 import com.boardv4.exception.member.MemberNotFoundException;
 import com.boardv4.repository.MemberRepository;
 import lombok.AllArgsConstructor;
@@ -30,19 +31,21 @@ public class MemberService {
     public void validateUsernameAvailable(String username) {
         // 중복 검사
         if (memberRepository.findByUsername(username).isPresent()) {
-            throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
+            throw new FieldValidationException("username", "이미 사용 중인 아이디입니다.");
         }
 
         // TODO 사용 불가 목록 검사 -> DB에 별도로 관리 또는 프로퍼티 파일
         if (isForbiddenUsername(username)) {
-            throw new IllegalArgumentException("사용할 수 없는 아이디입니다.");
+            throw new FieldValidationException("username", "사용할 수 없는 아이디입니다.");
         }
     }
 
     private boolean isForbiddenUsername(String username) {
         String[] forbidden = {"admin", "root", "system", "null"};
         for (String reserved : forbidden) {
-            if (reserved.equalsIgnoreCase(username)) return true;
+            if (reserved.equalsIgnoreCase(username)) {
+                return true;
+            }
         }
         return false;
     }

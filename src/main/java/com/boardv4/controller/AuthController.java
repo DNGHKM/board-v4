@@ -4,9 +4,9 @@ import com.boardv4.dto.auth.LoginRequest;
 import com.boardv4.dto.auth.LoginResponse;
 import com.boardv4.dto.auth.SignUpRequest;
 import com.boardv4.dto.auth.SignUpResponse;
-import com.boardv4.exception.base.FieldValidationException;
 import com.boardv4.service.AuthService;
 import com.boardv4.service.MemberService;
+import com.boardv4.validator.SignUpRequestValidator;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final AuthService authService;
     private final MemberService memberService;
+    private final SignUpRequestValidator signUpRequestValidator;
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody @Valid LoginRequest request) {
@@ -41,9 +42,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<SignUpResponse>> signUp(@RequestBody @Valid SignUpRequest request) {
-        if (!request.getPassword().equals(request.getPasswordCheck())) {
-            throw new FieldValidationException("password", "비밀번호와 비밀번호 확인이 일치하지 않습니다.");
-        }
+        signUpRequestValidator.validate(request);
 
         String accessToken = authService.signUp(request);
 
