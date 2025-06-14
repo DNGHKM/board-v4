@@ -4,6 +4,7 @@ import com.boardv4.dto.auth.LoginRequest;
 import com.boardv4.dto.auth.LoginResponse;
 import com.boardv4.dto.auth.SignUpRequest;
 import com.boardv4.dto.auth.SignUpResponse;
+import com.boardv4.exception.base.FieldValidationException;
 import com.boardv4.service.AuthService;
 import com.boardv4.service.MemberService;
 import jakarta.validation.Valid;
@@ -41,7 +42,7 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<SignUpResponse>> signUp(@RequestBody @Valid SignUpRequest request) {
         if (!request.getPassword().equals(request.getPasswordCheck())) {
-            throw new IllegalArgumentException("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+            throw new FieldValidationException("password", "비밀번호와 비밀번호 확인이 일치하지 않습니다.");
         }
 
         String accessToken = authService.signUp(request);

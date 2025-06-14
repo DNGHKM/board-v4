@@ -1,6 +1,7 @@
 package com.boardv4.exception;
 
 import com.boardv4.controller.ApiResponse;
+import com.boardv4.exception.base.FieldValidationException;
 import com.boardv4.exception.base.ForbiddenException;
 import com.boardv4.exception.base.NotFoundException;
 import com.boardv4.exception.post.DeletedPostException;
@@ -55,6 +56,17 @@ public class GlobalExceptionHandler {
                 .toList();
 
         ApiResponse<?> response = ApiResponse.failure("유효성 검사 실패", errors);
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(FieldValidationException.class)
+    public ResponseEntity<ApiResponse<?>> handleFieldValidation(FieldValidationException ex) {
+        Map<String, String> error = Map.of(
+                "field", ex.getField(),
+                "message", ex.getMessage()
+        );
+
+        ApiResponse<?> response = ApiResponse.failure("유효성 검사 실패", List.of(error));
         return ResponseEntity.badRequest().body(response);
     }
 }
