@@ -20,9 +20,8 @@ public class QnaController {
 
     @GetMapping("/{qnaId}")
     public ResponseEntity<ApiResponse<QnaViewResponse>> getQnaView(@PathVariable Long qnaId,
-                                                                   @RequestBody(required = false) QnaPasswordRequest passwordRequest,
                                                                    @LoginUser String username) {
-        QnaViewResponse response = qnaService.getQnaViewById(qnaId, passwordRequest, username);
+        QnaViewResponse response = qnaService.getQnaViewById(qnaId, username);
         return ResponseEntity.ok(ApiResponse.success("QnA를 조회하였습니다.", response));
     }
 

@@ -2,7 +2,10 @@ package com.boardv4.service;
 
 import com.boardv4.domain.Member;
 import com.boardv4.domain.Qna;
-import com.boardv4.dto.qna.*;
+import com.boardv4.dto.qna.QnaModifyRequest;
+import com.boardv4.dto.qna.QnaViewResponse;
+import com.boardv4.dto.qna.QnaWriteRequest;
+import com.boardv4.dto.qna.QnaWriteResponse;
 import com.boardv4.exception.base.ForbiddenException;
 import com.boardv4.exception.qna.QnaNotFoundException;
 import com.boardv4.mapper.QnaMapper;
@@ -11,7 +14,6 @@ import com.boardv4.util.PasswordUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
 
@@ -31,20 +33,19 @@ public class QnaService {
     /**
      * QnA 게시글을 ID로 조회
      * <p>
-     * 비밀글인 경우:
-     * - 로그인한 작성자는 본인글인 경우 비밀번호 없이 열람 가능
-     * - 작성자가 아니거나 비로그인 사용자는 비밀번호 일치 시 열람 가능
+     * 비밀글인 경우 작성자만 열람 가능
      *
-     * @param qnaId           조회할 QnA 게시글 ID
-     * @param passwordRequest 비밀글 열람 시 입력한 비밀번호 (작성자가 아닌 경우 필요)
-     * @param username        현재 로그인한 사용자의 username (null 가능)
+     * @param qnaId    조회할 QnA 게시글 ID
+     * @param username 현재 로그인한 사용자의 username (null 가능)
      * @return QnaViewResponse 게시글 상세 응답 DTO
      */
-    public QnaViewResponse getQnaViewById(Long qnaId, QnaPasswordRequest passwordRequest, String username) {
+    public QnaViewResponse getQnaViewById(Long qnaId, String username) {
         Qna qna = getQnaById(qnaId);
         Member writer = memberService.getMemberById(qna.getWriterId());
 
-        verifyAccessToSecretQna(qna, writer, username, passwordRequest);
+        if (qna.isSecret() && !username.equals(writer.getUsername())) {
+            throw new ForbiddenException();
+        }
 
         String answererName = null;
         if (qna.getAnswererId() != null) {
@@ -52,23 +53,6 @@ public class QnaService {
         }
 
         return qnaMapper.toViewDTO(qna, writer.getName(), answererName);
-    }
-
-
-    private static void verifyAccessToSecretQna(Qna qna, Member writer, String username, QnaPasswordRequest passwordRequest) {
-        if (!qna.isSecret()) {
-            return; // 비밀글이 아니면 검증 불필요
-        }
-
-        if (username != null && username.equals(writer.getUsername())) {
-            return; // 작성자는 비밀번호 없이 접근 허용
-        }
-
-        if (passwordRequest == null || ObjectUtils.isEmpty(passwordRequest.getPassword())) {
-            throw new ForbiddenException();
-        }
-
-        PasswordUtil.validatePassword(passwordRequest.getPassword(), qna.getPassword());
     }
 
     public QnaWriteResponse write(QnaWriteRequest writeDTO, String username) {
