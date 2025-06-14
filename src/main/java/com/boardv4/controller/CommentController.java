@@ -4,7 +4,6 @@ import com.boardv4.annotation.LoginRequired;
 import com.boardv4.annotation.LoginUser;
 import com.boardv4.dto.comment.CommentResponse;
 import com.boardv4.dto.comment.CommentWriteRequest;
-import com.boardv4.dto.comment.CommentWriteResponse;
 import com.boardv4.service.CommentService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,10 +30,10 @@ public class CommentController {
 
     @LoginRequired
     @PostMapping("/{postId}")
-    public ResponseEntity<ApiResponse<CommentWriteResponse>> writeComment(@PathVariable Long postId,
-                                                                          @RequestBody CommentWriteRequest writeRequest,
-                                                                          @LoginUser String username) {
-        CommentWriteResponse response = commentService.write(postId, username, writeRequest);
+    public ResponseEntity<ApiResponse<CommentResponse>> writeComment(@PathVariable Long postId,
+                                                                         @RequestBody CommentWriteRequest writeRequest,
+                                                                         @LoginUser String username) {
+        CommentResponse response = commentService.write(postId, username, writeRequest);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(ApiResponse.success("댓글을 등록하였습니다.", response));

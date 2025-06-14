@@ -1,6 +1,7 @@
 package com.boardv4.mapper;
 
 import com.boardv4.domain.Comment;
+import com.boardv4.dto.comment.CommentResponse;
 import com.boardv4.dto.comment.CommentWriteRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,4 +16,6 @@ public interface CommentMapper {
             @Mapping(target = "createAt", expression = "java(LocalDateTime.now())"),
     })
     Comment toEntity(Long postId, Long memberId, CommentWriteRequest commentWriteRequest);
+
+    CommentResponse toDTO(Comment comment, String name, String username);
 }

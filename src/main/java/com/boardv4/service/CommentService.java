@@ -4,7 +4,6 @@ import com.boardv4.domain.Comment;
 import com.boardv4.domain.Member;
 import com.boardv4.dto.comment.CommentResponse;
 import com.boardv4.dto.comment.CommentWriteRequest;
-import com.boardv4.dto.comment.CommentWriteResponse;
 import com.boardv4.exception.base.ForbiddenException;
 import com.boardv4.exception.comment.CommentNotFoundException;
 import com.boardv4.mapper.CommentMapper;
@@ -27,8 +26,6 @@ public class CommentService {
                 .orElseThrow(() -> new CommentNotFoundException(commentId));
     }
 
-
-
     /*
         댓글을 화면에 보여 주려면, 작성자의 '이름'이 필요함
         최초 구현 시에는 모든 comment 객체 내의 memberId를 기반으로 member를 조회하고,
@@ -43,16 +40,6 @@ public class CommentService {
         개선 2) 위 방법보다 차라리 Repository에서 바로 DTO를 구성하는게 낫겠다는 판단이 들어 해당 방법으로 개선 (쿼리 1회)
         TODO entity 확장? -> 다른 쿼리에서도 항상 join을 하는 등 불편이 생길 우려가 있어 일단 기존 방식 유지
      */
-
-    //    public List<CommentResponse> getCommentsByPostId(Long postId) {
-//        List<Comment> comments = commentRepository.findByPostId(postId);
-//        List<CommentResponse> list = new ArrayList<>();
-//        for (Comment comment : comments) {
-//            Member member = memberService.getMemberById(comment.getMemberId());
-//            list.add(commentMapper.toResponse(comment, member.getName()));
-//        }
-//        return list;
-//    }
     public List<CommentResponse> getCommentsByPostId(Long postId) {
         return commentRepository.findResponseListByPostId(postId);
     }
@@ -61,20 +48,20 @@ public class CommentService {
      * 댓글 작성
      *
      * <p>DTO로 Comment 엔티티를 생성, DB에 기록한 후
-     * 댓글 id를 반환합니다.</p>
+     * CommentResponse 반환</p>
      *
      * @param postId   게시글 id
      * @param username 사용자 유저명
      * @param writeDTO 댓글 작성 DTO(내용)
-     * @return CommentWriteResponse (comment Id)
+     * @return CommentWriteResponse (id, 내용, 작성자 username, 작성자 이름, 일시 등)
      */
-    public CommentWriteResponse write(Long postId, String username, CommentWriteRequest writeDTO) {
+    public CommentResponse write(Long postId, String username, CommentWriteRequest writeDTO) {
         Member member = memberService.getMemberByUsername(username);
 
         Comment comment = commentMapper.toEntity(postId, member.getId(), writeDTO);
         commentRepository.insert(comment);
 
-        return new CommentWriteResponse(comment.getId());
+        return commentMapper.toDTO(comment, member.getName(), member.getUsername());
     }
 
     /**
