@@ -8,8 +8,6 @@ import org.mapstruct.Mappings;
 
 import java.time.LocalDateTime;
 
-// 다른 클래스들은 단순히 DTO -> entity 변환이 아닌, 추가적인 값들을 더 필요로 함.
-// 완전한 자동이 아닌 이상에야, mapper를 따로 만드는 것에 대한 이점?
 @Mapper(componentModel = "spring", imports = {LocalDateTime.class})
 public interface PostMapper {
 
