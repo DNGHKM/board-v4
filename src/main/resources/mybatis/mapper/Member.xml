@@ -11,6 +11,7 @@
         SELECT *
         FROM member
         WHERE username = #{username}
+          AND role = 'USER'
     </select>
 
     <insert id="insert">

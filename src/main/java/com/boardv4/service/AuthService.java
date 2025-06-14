@@ -17,18 +17,13 @@ public class AuthService {
     public String login(String username, String inputPassword) {
         Member member = memberService.getMemberByUsername(username);
 
-        //getMemberByUsername은 여러 곳에서 재사용하기 위해서 USER 조건 안걸었음
-        if (member.getRole() == Role.ADMIN) {
-            throw new IllegalStateException("관리자 계정은 로그인할 수 없습니다.");
-        }
-
         PasswordUtil.validatePassword(inputPassword, member.getPassword());
 
         return jwtUtil.generateToken(member.getUsername());
     }
 
     /*
-    TODO 비밀번호 암호화 위치에 대하여
+        비밀번호 암호화 위치에 대하여
         1. 서비스에서 암호화 후 객체 생성
             - 암호화 책임이 도메인 내부보다는, 외부 서비스에 있다고 판단
             - 불변 객체를 유지할 수 있음

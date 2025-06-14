@@ -17,7 +17,6 @@ public class MemberService {
                 .orElseThrow(MemberNotFoundException::new);
     }
 
-    //TODO 애초에 사용자만 쿼리단에서 가져오기?
     public Member getMemberByUsername(String username) {
         return memberRepository.findByUsername(username)
                 .orElseThrow(MemberNotFoundException::new);
@@ -34,7 +33,7 @@ public class MemberService {
             throw new FieldValidationException("username", "이미 사용 중인 아이디입니다.");
         }
 
-        // TODO 사용 불가 목록 검사 -> DB에 별도로 관리 또는 프로퍼티 파일
+        // 사용 불가 목록 검사 -> DB에 별도로 관리 또는 프로퍼티 파일
         if (isForbiddenUsername(username)) {
             throw new FieldValidationException("username", "사용할 수 없는 아이디입니다.");
         }
@@ -43,7 +42,7 @@ public class MemberService {
     private boolean isForbiddenUsername(String username) {
         String[] forbidden = {"admin", "root", "system", "null"};
         for (String reserved : forbidden) {
-            if (reserved.equalsIgnoreCase(username)) {
+            if (reserved.contains(username)) {
                 return true;
             }
         }
