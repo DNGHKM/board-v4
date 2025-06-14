@@ -32,10 +32,6 @@ public class PostFileService {
      * @param postId       게시글 ID
      * @param files        업로드된 첨부 파일 목록 (MultipartFile List)
      */
-    /*
-        TODO 초기에는 여기서 확장자를 준수하지 않는 파일만 빼고 나머지는 저장하는 것으로 구현하였으나,
-            게시글 작성 실패 처리해도 무방하다고 판단 되어 로직 이동
-     */
     public void uploadMultipleFile(String boardEngName, Long postId, List<MultipartFile> files) {
         List<PostFile> postFiles = new ArrayList<>();
         for (MultipartFile file : files) {

@@ -30,7 +30,7 @@ public class CommentService {
 
 
     /*
-    TODO 댓글을 화면에 보여 주려면, 작성자의 '이름'이 필요함
+        댓글을 화면에 보여 주려면, 작성자의 '이름'이 필요함
         최초 구현 시에는 모든 comment 객체 내의 memberId를 기반으로 member를 조회하고,
         해당 member의 이름을 DTO에 포함해서 Response 객체를 만들었음
         (댓글 가져오기 쿼리 1회, 각 댓글마다 작성자 이름 찾기 쿼리 n회)
@@ -41,7 +41,7 @@ public class CommentService {
         (댓글 가져오기 쿼리 1회, 사용자 이름 Map 반환 쿼리 1회)
         --
         개선 2) 위 방법보다 차라리 Repository에서 바로 DTO를 구성하는게 낫겠다는 판단이 들어 해당 방법으로 개선 (쿼리 1회)
-        * entity 확장?
+        TODO entity 확장? -> 다른 쿼리에서도 항상 join을 하는 등 불편이 생길 우려가 있어 일단 기존 방식 유지
      */
 
     //    public List<CommentResponse> getCommentsByPostId(Long postId) {
