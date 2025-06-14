@@ -38,7 +38,7 @@ public class PostController {
     }
 
     /*
-    TODO 로그인 검증과 username 파라미터 바인딩
+        로그인 검증과 username 파라미터 바인딩
         [최초 구현 순서]
             1. @LoginRequired AOP
                 - 로그인 여부 확인 + request에 username 추가

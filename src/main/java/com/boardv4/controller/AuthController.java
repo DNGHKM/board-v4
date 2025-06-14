@@ -50,6 +50,4 @@ public class AuthController {
                 new ApiResponse<>(true, "회원가입 성공", new SignUpResponse(accessToken))
         );
     }
-
-    //TODO 로그아웃은 스토리지에서 삭제, 프론트에서 수행
 }
