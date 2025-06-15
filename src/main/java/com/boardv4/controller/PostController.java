@@ -18,19 +18,12 @@ import org.springframework.web.bind.annotation.*;
 public class PostController {
     private final PostService postService;
 
-/*
-    TODO 리스트에 보여줄 응답 구현해야 함(페이징)
-        응답은 여러 화면에서 공통으로 사용하기 위해(표시할 항목이 일반 게시판과 갤러리가 다름)
-        썸네일사진 파일명(갤러리), 첨부파일 갯수(갤러리), 댓글 갯수(자유게시판) 모두 포함해야 함
- */
+    @GetMapping
+    public ResponseEntity<ApiResponse<PostListResponse>> getPostList(@ModelAttribute @Valid PostSearchRequest request) {
+        PostListResponse response = postService.getPostList(request);
+        return ResponseEntity.ok(ApiResponse.success("게시글을 목록을 조회하였습니다.", response));
+    }
 
-
-    //    @GetMapping
-//    public ResponseEntity<ApiResponse<ListPostResponse>> getPostList(@ModelAttribute @Valid SearchPostRequest listRequestDTO) {
-//        ListPostResponse dto = postService.getPostList(listRequestDTO);
-//        return ResponseEntity.ok(ApiResponse.success("게시글을 목록을 조회하였습니다.", dto));
-//    }
-//
     @GetMapping("/{postId}")
     public ResponseEntity<ApiResponse<PostViewResponse>> getPostView(@PathVariable Long postId) {
         PostViewResponse dto = postService.getPostViewById(postId);

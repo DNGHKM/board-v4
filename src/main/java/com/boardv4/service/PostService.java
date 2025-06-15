@@ -1,10 +1,8 @@
 package com.boardv4.service;
 
 import com.boardv4.domain.*;
-import com.boardv4.dto.post.PostModifyRequest;
-import com.boardv4.dto.post.PostViewResponse;
-import com.boardv4.dto.post.PostWriteRequest;
-import com.boardv4.dto.post.PostWriteResponse;
+import com.boardv4.dto.post.*;
+import com.boardv4.exception.base.FieldValidationException;
 import com.boardv4.exception.base.ForbiddenException;
 import com.boardv4.exception.post.DeletedPostException;
 import com.boardv4.exception.post.PostNotFoundException;
@@ -12,14 +10,18 @@ import com.boardv4.mapper.PostMapper;
 import com.boardv4.repository.PostRepository;
 import com.boardv4.validator.BoardPolicyValidator;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class PostService {
     private final MemberService memberService;
     private final BoardService boardService;
@@ -50,15 +52,28 @@ public class PostService {
         Board board = boardService.getBoardById(writeDTO.getBoardId());
         boardPolicyValidator.validate(writeDTO.isPinned(), writeDTO.getFiles(), board);
 
-        // 2. 작성자 정보 확인 및 게시글 저장
+        // 2. 해당 카테고리가 Board에 속해있는지 확인
+        Set<Long> categoryIds = categoryService.getAllCategoriesByBoard(writeDTO.getBoardId())
+                .stream()
+                .map(Category::getId)
+                .collect(Collectors.toSet());
+
+        if (!categoryIds.contains(writeDTO.getCategoryId())) {
+            throw new FieldValidationException("categoryId", "해당 게시판에 속하지 않은 카테고리입니다.");
+        }
+
+
+        // 3. 작성자 정보 확인 및 게시글 저장
         Long memberId = memberService.getMemberByUsername(username).getId();
         Post post = postMapper.toEntity(memberId, writeDTO);
         postRepository.insert(post);
 
-        // 3. 파일 저장
-        postFileService.uploadMultipleFile(board.getEngName(), post.getId(), writeDTO.getFiles());
+        // 4. 파일 저장
+        if (writeDTO.getFiles() != null) {
+            postFileService.uploadMultipleFile(board.getEngName(), post.getId(), writeDTO.getFiles());
+        }
 
-        // 4. 응답 객체 구성 및 반환
+        // 5. 응답 객체 구성 및 반환
         return PostWriteResponse.from(post.getId(), board.getEngName());
     }
 
@@ -74,6 +89,33 @@ public class PostService {
 
         // 4. 응답 구성 및 반환
         return PostViewResponse.from(post, category.getName(), files);
+    }
+
+    public PostListResponse getPostList(PostSearchRequest request) {
+        //게시판 가져오기
+        Board board = boardService.getBoardById(request.getBoardId());
+
+        // 검색 결과 개수 조회
+        int totalCount = postRepository.countBySearch(request);
+        log.info("전체 게시글 갯수 = {}", totalCount);
+
+        // 전체 페이지 수 계산
+        int totalPages = (int) Math.ceil((double) totalCount / request.getSize());
+
+        //페이지 수 보정(1 미만 혹은 너무 큰 페이지 넘버가 들어오는 경우)
+        request.adjustPage(totalPages);
+
+        // 페이징 계산
+        int offset = Math.min(
+                (request.getPage() - 1) * request.getSize(),
+                (totalCount / request.getSize()) * request.getSize()
+        );
+
+        // 게시글 목록 조회
+        List<PostSummaryResponse> posts = postRepository.findBySearch(request, offset);
+
+        // 응답 DTO 구성
+        return PostListResponse.from(request, board.getEngName(), totalPages, totalCount, posts);
     }
 
     public Integer increaseViewCount(Long id) {
