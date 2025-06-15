@@ -4,8 +4,8 @@
   "settings": {
     "width": 2000,
     "height": 2000,
-    "scrollTop": -5,
-    "scrollLeft": -194,
+    "scrollTop": 0,
+    "scrollLeft": 0,
     "zoomLevel": 1,
     "show": 511,
     "database": 4,
@@ -202,6 +202,7 @@
         "comment": "게시판",
         "columnIds": [
           "y-bzMmQxsDKa85XA545TF",
+          "VKwpEMfrldm7uM7XScso-",
           "eHMPhFrXDRfd4XSK47_Yj",
           "KJjKk1f3Mixc1rzen_6xP",
           "uDJLXzvySc2Dz8jNWn7Wb",
@@ -215,6 +216,7 @@
         ],
         "seqColumnIds": [
           "y-bzMmQxsDKa85XA545TF",
+          "VKwpEMfrldm7uM7XScso-",
           "eHMPhFrXDRfd4XSK47_Yj",
           "KJjKk1f3Mixc1rzen_6xP",
           "uDJLXzvySc2Dz8jNWn7Wb",
@@ -228,14 +230,14 @@
         ],
         "ui": {
           "x": 591,
-          "y": 4.8437,
+          "y": 3.8437,
           "zIndex": 261,
           "widthName": 60,
           "widthComment": 60,
           "color": ""
         },
         "meta": {
-          "updateAt": 1749836379331,
+          "updateAt": 1749999189068,
           "createAt": 1746953879930
         }
       },
@@ -1639,6 +1641,26 @@
           "updateAt": 1749836386025,
           "createAt": 1749836372961
         }
+      },
+      "VKwpEMfrldm7uM7XScso-": {
+        "id": "VKwpEMfrldm7uM7XScso-",
+        "tableId": "KfrmxVhOqIJjgiOHgMyGS",
+        "name": "board_type",
+        "comment": "게시판 타입",
+        "dataType": "VARCHAR(32)",
+        "default": "",
+        "options": 0,
+        "ui": {
+          "keys": 0,
+          "widthName": 62,
+          "widthComment": 65,
+          "widthDataType": 75,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1749999192383,
+          "createAt": 1749999174902
+        }
       }
     },
     "relationshipEntities": {
@@ -1737,7 +1759,7 @@
             "y-bzMmQxsDKa85XA545TF"
           ],
           "x": 919,
-          "y": 324.8437,
+          "y": 347.8437,
           "direction": 8
         },
         "end": {
@@ -1821,7 +1843,7 @@
             "y-bzMmQxsDKa85XA545TF"
           ],
           "x": 1247,
-          "y": 164.8437,
+          "y": 175.8437,
           "direction": 2
         },
         "end": {

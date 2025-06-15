@@ -11,5 +11,9 @@
         FROM board
         WHERE eng_name = #{boardEngName};
     </select>
+    <select id="findAll" resultType="Board">
+        SELECT *
+        FROM board
+    </select>
 
 </mapper>

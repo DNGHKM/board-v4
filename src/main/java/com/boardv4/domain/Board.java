@@ -1,5 +1,6 @@
 package com.boardv4.domain;
 
+import com.boardv4.enums.BoardType;
 import com.boardv4.enums.FileType;
 import lombok.*;
 
@@ -10,6 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 public class Board {
     private Long id;
+    private BoardType boardType;
     private String engName;
     private String korName;
     private boolean allowComment;
