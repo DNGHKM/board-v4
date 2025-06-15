@@ -3,6 +3,7 @@ package com.boardv4.validator;
 import com.boardv4.domain.Board;
 import com.boardv4.enums.FileType;
 import com.boardv4.exception.base.ForbiddenException;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,7 +36,7 @@ public class BoardPolicyValidator {
     private void validateFilePolicy(List<MultipartFile> files, Board board) {
         FileType fileType = board.getFileType();
 
-        if (files.isEmpty()) {
+        if (ObjectUtils.isEmpty(files)) {
             return;
         }
 
