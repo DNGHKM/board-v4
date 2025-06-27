@@ -62,11 +62,12 @@ SpringBoot 기반 REST API 서버와 Next.js SPA, Thymeleaf MPA를 조합한 통
 <details>
 <summary><strong>인증 API</strong></summary>
 
-| Method | URL               | 설명               |
-|--------|-------------------|--------------------|
-| POST   | /api/auth/login   | 사용자 로그인       |
-| GET    | /api/auth/check   | 로그인 상태 확인   |
-| POST   | /api/auth/logout  | 로그아웃           |
+| Method | URL              | 설명            |
+|--------|------------------|---------------|
+| POST   | /api/auth/login  | 사용자 로그인       |
+| GET    | /api/auth/check  | 유저명 중복 확인     |
+| GET    | /api/auth/me     | 토큰 기반 유저정보 확인 |
+| POST   | /api/auth/logout | 로그아웃          |
 
 </details>
 
