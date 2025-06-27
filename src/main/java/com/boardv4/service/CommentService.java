@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * 댓글 관련 비즈니스 로직을 처리하는 서비스 클래스입니다.
+ */
 @Service
 @AllArgsConstructor
 public class CommentService {
@@ -38,23 +41,13 @@ public class CommentService {
         (댓글 가져오기 쿼리 1회, 사용자 이름 Map 반환 쿼리 1회)
         --
         개선 2) 위 방법보다 차라리 Repository에서 바로 DTO를 구성하는게 낫겠다는 판단이 들어 해당 방법으로 개선 (쿼리 1회)
-        TODO entity 확장? -> 다른 쿼리에서도 항상 join을 하는 등 불편이 생길 우려가 있어 일단 기존 방식 유지
+        entity 확장? -> 다른 쿼리에서도 항상 join을 하는 등 불편이 생길 우려가 있어 일단 기존 방식 유지
      */
+
     public List<CommentResponse> getCommentsByPostId(Long postId) {
         return commentRepository.findResponseListByPostId(postId);
     }
 
-    /**
-     * 댓글 작성
-     *
-     * <p>DTO로 Comment 엔티티를 생성, DB에 기록한 후
-     * CommentResponse 반환</p>
-     *
-     * @param postId   게시글 id
-     * @param username 사용자 유저명
-     * @param writeDTO 댓글 작성 DTO(내용)
-     * @return CommentWriteResponse (id, 내용, 작성자 username, 작성자 이름, 일시 등)
-     */
     public CommentResponse write(Long postId, String username, CommentWriteRequest writeDTO) {
         Member member = memberService.getMemberByUsername(username);
 
@@ -65,10 +58,11 @@ public class CommentService {
     }
 
     /**
-     * 댓글 삭제
-     * <p>댓글 id를 기준으로 댓글을 삭제합니다.</p>
+     * 댓글을 삭제합니다. 작성자 본인만 삭제할 수 있습니다.
      *
-     * @param commentId 댓글 id
+     * @param commentId 댓글 ID
+     * @param username  현재 로그인한 사용자 username
+     * @throws ForbiddenException 댓글 작성자가 아닌 경우
      */
     public void deleteById(Long commentId, String username) {
         Comment comment = getCommentById(commentId);

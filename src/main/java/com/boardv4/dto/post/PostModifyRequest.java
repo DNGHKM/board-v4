@@ -25,12 +25,10 @@ public class PostModifyRequest {
     @Length(min = CONTENT_MIN_LENGTH, max = CONTENT_MAX_LENGTH, message = CONTENT_LENGTH)
     private String content;
 
-    private boolean pinned;
 
     //보존되는 저장파일명 목록(uuid.확장자)
     private List<String> preserveFilenames;
 
     //새로 업로드 된 파일 목록
     private List<MultipartFile> files;
-
 }

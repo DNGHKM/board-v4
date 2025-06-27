@@ -5,12 +5,12 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class PostWriteResponse {
+public class PostModifyResponse {
     private Long boardId;
     private Long postId;
 
-    public static PostWriteResponse from(Long boardId, Long postId) {
-        return PostWriteResponse.builder()
+    public static PostModifyResponse from(Long boardId, Long postId) {
+        return PostModifyResponse.builder()
                 .boardId(boardId)
                 .postId(postId)
                 .build();

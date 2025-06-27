@@ -8,5 +8,5 @@ import java.time.LocalDateTime;
 
 @Mapper(componentModel = "spring", imports = {LocalDateTime.class})
 public interface QnaMapper {
-    QnaViewResponse toViewDTO(Qna qna, String writerName, String answererName);
+    QnaViewResponse toViewDTO(Qna qna, String writerName, String writerUsername, String answererName);
 }

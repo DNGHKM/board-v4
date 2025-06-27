@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public class QnaViewResponse {
     private Long id;
     private String writerName;
+    private String writerUsername;
     private String subject;
     private String content;
     private LocalDateTime questionAt;
@@ -17,4 +18,5 @@ public class QnaViewResponse {
     private String answer;
     private LocalDateTime answerAt;
     private Integer viewCount;
+    private boolean secret;
 }

@@ -6,11 +6,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SignUpRequestValidator {
-
-    /*
-      TODO 회원가입 요청 비밀번호 특수룰 검증
-        (특수룰 - 아이디와 동일한 문자 불가능, 동일 문자 연속 3번 이상 불가)
-     */
     public void validate(SignUpRequest request) {
         String username = request.getUsername();
         String password = request.getPassword();

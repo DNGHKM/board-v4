@@ -8,18 +8,122 @@
     </select>
 
     <insert id="insert" parameterType="Qna" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO qna(writer_id, subject, content, question_at, secret, password, view_count)
-            VALUE (#{writerId}, #{subject}, #{content}, #{questionAt}, #{secret}, #{password}, #{viewCount})
+        INSERT INTO qna(writer_id, subject, content, question_at, secret, view_count)
+            VALUE (#{writerId}, #{subject}, #{content}, #{questionAt}, #{secret}, #{viewCount})
     </insert>
 
     <update id="update" parameterType="Qna">
         UPDATE qna
         SET subject  = #{subject},
             content  = #{content},
-            secret   = #{secret},
-            password = #{password}
+            secret   = #{secret}
         WHERE id = #{id}
     </update>
+    <update id="increaseViewCount">
+            UPDATE qna
+            SET view_count = view_count + 1
+            WHERE id = #{qnaId}
+    </update>
+
+    <select id="findViewCountById" parameterType="Long" resultType="Integer">
+        SELECT view_count
+        FROM qna
+        WHERE id = #{qnaId};
+    </select>
+
+
+    <select id="countBySearch" resultType="Integer">
+        SELECT COUNT(*)
+        FROM qna q
+        JOIN member m
+        ON q.writer_id = m.id
+
+        <if test="dto.startDate != null">
+            AND Date(q.question_at) &gt;= #{dto.startDate}
+        </if>
+
+        <if test="dto.endDate != null">
+            AND Date(q.question_at) &lt;= #{dto.endDate}
+        </if>
+
+        <if test="dto.myQna">
+            AND m.username = #{username}
+        </if>
+
+        <if test="dto.keyword != null and dto.keyword != ''">
+            AND (
+            q.subject LIKE CONCAT('%', #{dto.keyword}, '%')
+            OR q.content LIKE CONCAT('%', #{dto.keyword}, '%')
+            )
+        </if>
+    </select>
+
+    <select id="findBySearch" resultType="com.boardv4.dto.qna.QnaSummaryResponse">
+        SELECT
+        q.id,
+        q.subject,
+        m.name AS writerName,
+        m.username AS writerUsername,
+        q.answer is not null AS hasAnswer,
+        q.secret,
+        q.view_count AS viewCount,
+        q.question_at AS questionAt
+
+        FROM qna q
+        JOIN member m ON q.writer_id = m.id
+
+        <if test="dto.startDate != null">
+            AND DATE(q.question_at) &gt;= #{dto.startDate}
+        </if>
+
+        <if test="dto.endDate != null">
+            AND DATE(q.question_at) &lt;= #{dto.endDate}
+        </if>
+
+        <if test="dto.keyword != null and dto.keyword != ''">
+            AND (
+            q.subject LIKE CONCAT('%', #{dto.keyword}, '%')
+            OR q.content LIKE CONCAT('%', #{dto.keyword}, '%')
+            )
+        </if>
+        <if test="dto.myQna">
+            AND m.username = #{username}
+        </if>
+
+        ORDER BY
+        <choose>
+            <when test="dto.sortBy.name() == 'CREATE_DATE'">q.question_at</when>
+            <when test="dto.sortBy.name() == 'SUBJECT'">q.subject</when>
+            <when test="dto.sortBy.name() == 'VIEW_COUNT'">q.view_count</when>
+            <otherwise>q.question_at</otherwise>
+        </choose>
+        <choose>
+            <when test="dto.sortDirection.name() == 'ASC'">ASC</when>
+            <otherwise>DESC</otherwise>
+        </choose>
+        , q.id DESC
+
+        LIMIT #{dto.size} OFFSET #{offset}
+    </select>
+
+    <select id="findLatestQnaList" resultType="com.boardv4.dto.qna.QnaSummaryResponse">
+        SELECT
+        q.id,
+        q.subject,
+        m.name AS writerName,
+        m.username AS writerUsername,
+        q.answer is not null AS hasAnswer,
+        q.secret,
+        q.view_count AS viewCount,
+        q.question_at AS questionAt
+
+        FROM qna q
+        JOIN member m ON q.writer_id = m.id
+
+        ORDER BY q.id DESC
+
+        LIMIT #{limit}
+    </select>
 
     <delete id="delete">
         DELETE

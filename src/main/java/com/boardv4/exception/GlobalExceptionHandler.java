@@ -1,9 +1,10 @@
 package com.boardv4.exception;
 
-import com.boardv4.controller.ApiResponse;
+import com.boardv4.controller.ApiResponseDTO;
 import com.boardv4.exception.base.FieldValidationException;
 import com.boardv4.exception.base.ForbiddenException;
 import com.boardv4.exception.base.NotFoundException;
+import com.boardv4.exception.member.PasswordNotMatchException;
 import com.boardv4.exception.post.DeletedPostException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,24 +21,31 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ApiResponse<?>> handleNotFound(NotFoundException ex) {
+    public ResponseEntity<ApiResponseDTO<?>> handleNotFound(NotFoundException ex) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .body(ApiResponse.failure(ex.getMessage()));
+                .body(ApiResponseDTO.failure(ex.getMessage()));
+    }
+
+    @ExceptionHandler(PasswordNotMatchException.class)
+    public ResponseEntity<ApiResponseDTO<?>> handlePasswordNotMatch(PasswordNotMatchException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponseDTO.failure(ex.getMessage()));
     }
 
     @ExceptionHandler(DeletedPostException.class)
-    public ResponseEntity<ApiResponse<?>> handleDeletedPost(DeletedPostException e) {
+    public ResponseEntity<ApiResponseDTO<?>> handleDeletedPost(DeletedPostException e) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .body(ApiResponse.failure(e.getMessage()));
+                .body(ApiResponseDTO.failure(e.getMessage()));
     }
 
     @ExceptionHandler(ForbiddenException.class)
-    public ResponseEntity<ApiResponse<?>> handleForbidden(ForbiddenException e) {
+    public ResponseEntity<ApiResponseDTO<?>> handleForbidden(ForbiddenException e) {
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
-                .body(ApiResponse.failure(e.getMessage()));
+                .body(ApiResponseDTO.failure(e.getMessage()));
     }
 
     /**
@@ -47,7 +55,7 @@ public class GlobalExceptionHandler {
      * @return : 필드와 에러응답 메시지의 Map List를 포함한 ApiResponse
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<?>> handleValidationException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ApiResponseDTO<?>> handleValidationException(MethodArgumentNotValidException ex) {
         List<Map<String, String>> errors = ex.getBindingResult().getFieldErrors().stream()
                 .map(error -> Map.of(
                         "field", error.getField(),
@@ -55,18 +63,19 @@ public class GlobalExceptionHandler {
                 ))
                 .toList();
 
-        ApiResponse<?> response = ApiResponse.failure("유효성 검사 실패", errors);
+        ApiResponseDTO<?> response = ApiResponseDTO.failure("유효성 검사 실패", errors);
         return ResponseEntity.badRequest().body(response);
     }
 
     @ExceptionHandler(FieldValidationException.class)
-    public ResponseEntity<ApiResponse<?>> handleFieldValidation(FieldValidationException ex) {
+    public ResponseEntity<ApiResponseDTO<?>> handleFieldValidation(FieldValidationException ex) {
         Map<String, String> error = Map.of(
                 "field", ex.getField(),
                 "message", ex.getMessage()
         );
 
-        ApiResponse<?> response = ApiResponse.failure("유효성 검사 실패", List.of(error));
+        ApiResponseDTO<?> response = ApiResponseDTO.failure("유효성 검사 실패", List.of(error));
         return ResponseEntity.badRequest().body(response);
     }
+
 }

@@ -19,7 +19,4 @@ public class QnaWriteRequest {
     private String content;
 
     private boolean secret;
-
-    @Length(min = QNA_PW_MIN_LENGTH, max = QNA_PW_MAX_LENGTH, message = QNA_PW_LENGTH)
-    private String password;
 }

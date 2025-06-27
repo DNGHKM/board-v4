@@ -1,5 +1,6 @@
 package com.boardv4.util;
 
+import com.boardv4.exception.member.PasswordNotMatchException;
 import org.apache.commons.codec.digest.DigestUtils;
 
 public class PasswordUtil {
@@ -9,7 +10,7 @@ public class PasswordUtil {
 
     public static void validatePassword(String inputPassword, String storedPassword) {
         if (!PasswordUtil.encrypt(inputPassword).equals(storedPassword)) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new PasswordNotMatchException();
         }
     }
 }

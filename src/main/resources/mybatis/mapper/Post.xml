@@ -10,7 +10,7 @@
     <insert id="insert" parameterType="Post" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO post(member_id, board_id, category_id, subject, content, view_count, create_at, deleted, pinned)
         VALUES (#{memberId}, #{boardId}, #{categoryId}, #{subject},
-                #{content}, #{viewCount}, #{createAt}, #{deleted}, #{pinned})
+                #{content}, #{viewCount}, #{createAt}, #{deleted}, false)
     </insert>
 
     <update id="update" parameterType="Post">
@@ -18,7 +18,7 @@
         SET category_id = #{categoryId},
             subject     = #{subject},
             content     = #{content},
-            pinned      = #{pinned}
+            pinned      = false
         WHERE id = #{id}
     </update>
 
@@ -74,7 +74,7 @@
         (
         SELECT COUNT(*)
         FROM comment
-        WHERE post_id = id
+        WHERE post_id = p.id
         ) AS commentCount,
 
         -- 첨부파일 수
@@ -128,12 +128,95 @@
         LIMIT #{dto.size} OFFSET #{offset}
     </select>
 
+    <select id="findLatestPostList" resultType="com.boardv4.dto.post.PostSummaryResponse">
+        SELECT
+        p.id,
+        c.name AS categoryName,
+        p.subject,
+        m.name AS writerName,
+
+        -- 썸네일 파일명 (예: 대표 첨부파일 1개만)
+        (
+        SELECT pf.saved_filename
+        FROM post_file pf
+        WHERE pf.post_id = p.id
+        ORDER BY pf.id ASC
+        LIMIT 1
+        ) AS thumbnailFilename,
+
+        -- 댓글 수
+        (
+        SELECT COUNT(*)
+        FROM comment
+        WHERE post_id = p.id
+        ) AS commentCount,
+
+        -- 첨부파일 수
+        (
+        SELECT COUNT(*)
+        FROM post_file pf
+        WHERE pf.post_id = p.id
+        ) AS fileCount,
+
+        p.view_count AS viewCount,
+        p.create_at AS createAt
+
+        FROM post p
+        JOIN category c ON p.category_id = c.id
+        JOIN member m ON p.member_id = m.id
+        WHERE p.board_id = #{boardId}
+        ORDER BY p.id DESC
+
+        LIMIT #{limit}
+    </select>
+
+    <select id="findPinnedTop5" resultType="com.boardv4.dto.post.PostSummaryResponse">
+        SELECT
+            p.id,
+            c.name AS categoryName,
+            p.subject,
+            m.name AS writerName,
+            -- 썸네일 파일명 (예: 대표 첨부파일 1개만)
+            (
+                SELECT pf.saved_filename
+                FROM post_file pf
+                WHERE pf.post_id = p.id
+                ORDER BY pf.id ASC
+                LIMIT 1
+            ) AS thumbnailFilename,
+
+            -- 댓글 수
+            (
+                SELECT COUNT(*)
+                FROM comment
+                WHERE post_id = p.id
+            ) AS commentCount,
+
+            -- 첨부파일 수
+            (
+                SELECT COUNT(*)
+                FROM post_file pf
+                WHERE pf.post_id = p.id
+            ) AS fileCount,
+
+            p.view_count AS viewCount,
+            p.create_at AS createAt
+
+        FROM post p
+                 JOIN category c ON p.category_id = c.id
+                 JOIN member m ON p.member_id = m.id
+        WHERE p.board_id = #{boardId}
+          AND p.pinned = true
+
+        ORDER BY p.id DESC
+        LIMIT 5
+    </select>
 
 
     <update id="softDelete">
         UPDATE post
-        SET subject   = #{deletedSubject},
-            content   = #{deletedContent},
+        SET subject   = #{softDeletedSubject},
+            content   = #{softDeletedContent},
             deleted   = true
         WHERE id = #{postId}
     </update>

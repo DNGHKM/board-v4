@@ -15,21 +15,14 @@ public class BoardPolicyValidator {
     /**
      * 게시판 정책 검증 (작성자 권한, 고정 가능 여부, 파일 정책 등)
      */
-    public void validate(boolean isPinned, List<MultipartFile> files, Board board) {
+    public void validate(List<MultipartFile> files, Board board) {
         validateWriterPolicy(board);
-        validatePinPolicy(isPinned, board);
         validateFilePolicy(files, board);
     }
 
     private void validateWriterPolicy(Board board) {
         if (board.isWriteAdminOnly()) {
             throw new ForbiddenException();
-        }
-    }
-
-    private void validatePinPolicy(boolean isPinned, Board board) {
-        if (isPinned && !board.isAllowPinned()) {
-            throw new IllegalArgumentException("게시글 고정이 지원되지 않는 게시판입니다.");
         }
     }
 

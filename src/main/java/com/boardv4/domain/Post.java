@@ -28,6 +28,5 @@ public class Post {
         this.categoryId = modifyDTO.getCategoryId();
         this.subject = modifyDTO.getSubject();
         this.content = modifyDTO.getContent();
-        this.pinned = modifyDTO.isPinned();
     }
 }

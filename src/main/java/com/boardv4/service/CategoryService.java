@@ -8,17 +8,18 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * 카테고리 관련 비즈니스 로직을 처리하는 서비스 클래스입니다.
+ */
 @Service
 @AllArgsConstructor
 public class CategoryService {
     private final CategoryRepository categoryRepository;
 
-    //게시판 별 모든 카테고리 반환
-    public List<Category> getAllCategoriesByBoard(Long boardId) {
+    public List<Category> getAllCategoriesByBoardId(Long boardId) {
         return categoryRepository.findByBoardId(boardId);
     }
 
-    //ID에 해당하는 카테고리를 반환
     public Category getCategoryById(Long id) {
         return categoryRepository.findById(id)
                 .orElseThrow(CategoryNotFoundException::new);

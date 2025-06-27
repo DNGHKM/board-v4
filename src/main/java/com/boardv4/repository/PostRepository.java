@@ -18,7 +18,7 @@ public interface PostRepository {
 
     Integer findViewCountById(Long postId);
 
-    void softDelete(Long id, String softDeletedSubject, String softDeletedContent);
+    void softDelete(Long postId, String softDeletedSubject, String softDeletedContent);
 
     void hardDelete(Long postId);
 
@@ -27,4 +27,8 @@ public interface PostRepository {
     int countBySearch(PostSearchRequest dto);
 
     List<PostSummaryResponse> findBySearch(PostSearchRequest dto, int offset);
+
+    List<PostSummaryResponse> findPinnedTop5(Long boardId);
+
+    List<PostSummaryResponse> findLatestPostList(Long boardId, Integer limit);
 }

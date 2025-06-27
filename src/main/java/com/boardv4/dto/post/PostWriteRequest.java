@@ -29,7 +29,5 @@ public class PostWriteRequest {
     @Length(min = CONTENT_MIN_LENGTH, max = CONTENT_MAX_LENGTH, message = CONTENT_LENGTH)
     private String content;
 
-    private boolean pinned;
-
     private List<MultipartFile> files;
 }

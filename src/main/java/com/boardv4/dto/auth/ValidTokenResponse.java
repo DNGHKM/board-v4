@@ -9,8 +9,7 @@ import lombok.Setter;
 @Setter
 @Builder
 @AllArgsConstructor
-public class LoginResponse {
-    String accessToken;
+public class ValidTokenResponse {
     String username;
     String name;
 }

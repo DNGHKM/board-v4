@@ -1,7 +1,7 @@
 package com.boardv4.service;
 
 import com.boardv4.domain.Member;
-import com.boardv4.dto.auth.SignUpRequest;
+import com.boardv4.dto.auth.*;
 import com.boardv4.enums.Role;
 import com.boardv4.security.JwtUtil;
 import com.boardv4.util.PasswordUtil;
@@ -14,12 +14,17 @@ public class AuthService {
     private final MemberService memberService;
     private final JwtUtil jwtUtil;
 
-    public String login(String username, String inputPassword) {
+    public LoginResponse login(String username, String inputPassword) {
         Member member = memberService.getMemberByUsername(username);
 
         PasswordUtil.validatePassword(inputPassword, member.getPassword());
+        String token = jwtUtil.generateToken(member.getUsername());
 
-        return jwtUtil.generateToken(member.getUsername());
+        return LoginResponse.builder()
+                .accessToken(token)
+                .username(member.getUsername())
+                .name(member.getName())
+                .build();
     }
 
     /*
@@ -38,7 +43,7 @@ public class AuthService {
             → 불변 객체 설계 유지 + 암호화 책임을 명확히 분리
             → Mapper와 도메인 모두 순수하게 유지할 수 있는 구조
     */
-    public String signUp(SignUpRequest request) {
+    public SignUpResponse signUp(SignUpRequest request) {
         memberService.validateUsernameAvailable(request.getUsername());
 
         String encryptedPassword = PasswordUtil.encrypt(request.getPassword());
@@ -51,6 +56,18 @@ public class AuthService {
                 .build();
 
         memberService.save(member);
-        return jwtUtil.generateToken(member.getUsername());
+        String token = jwtUtil.generateToken(member.getUsername());
+        return SignUpResponse.builder()
+                .accessToken(token)
+                .username(member.getUsername())
+                .name(member.getName())
+                .build();
+    }
+
+    public ValidTokenResponse validAndGetUsername(ValidTokenRequest request) {
+        String username = jwtUtil.getUsername(request.getToken());
+        Member member = memberService.getMemberByUsername(username);
+
+        return ValidTokenResponse.builder().username(member.getUsername()).name(member.getName()).build();
     }
 }

@@ -11,4 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SignUpResponse {
     private String accessToken;
+    private String username;
+    private String name;
 }
