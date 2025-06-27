@@ -95,9 +95,6 @@ public class PostService {
      * @return 게시글 목록 응답
      */
     public PostListResponse getPostList(PostSearchRequest request) {
-        //게시판 가져오기
-        Board board = boardService.getBoardById(request.getBoardId());
-
         // 검색 결과 개수 조회
         int totalCount = postRepository.countBySearch(request);
 

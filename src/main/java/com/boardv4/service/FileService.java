@@ -139,10 +139,7 @@ public class FileService {
             // 3. 파일을 읽어 Resource 객체로 변환 (스트리밍 대응)
             Resource resource = new InputStreamResource(Files.newInputStream(filePath));
 
-            // 4. 사용자에게 보여줄 파일명을 UTF-8로 인코딩 (브라우저 호환성)
-            String encodedFileName = URLEncoder.encode(originalFilename, StandardCharsets.UTF_8)
-                    .replace("+", "%20"); // 공백 문자 보정
-            // 5. 응답 본문 구성 및 헤더 설정
+            // 4. 응답 본문 구성 및 헤더 설정
             return ResponseEntity.ok()
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .body(resource);
