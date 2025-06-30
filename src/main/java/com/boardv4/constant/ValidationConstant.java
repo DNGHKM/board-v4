@@ -34,9 +34,6 @@ public interface ValidationConstant {
     int CONTENT_MIN_LENGTH = 4;
     int CONTENT_MAX_LENGTH = 2000;
     String CONTENT_LENGTH = "제목은 " + CONTENT_MIN_LENGTH + "자 이상 " + CONTENT_MAX_LENGTH + " 이하로 입력해 주세요";
-    int QNA_PW_MIN_LENGTH = 4;
-    int QNA_PW_MAX_LENGTH = 4;
-    String QNA_PW_LENGTH = "게시글 비밀번호는 " + QNA_PW_MIN_LENGTH + "자 이상 " + QNA_PW_MAX_LENGTH + " 이하로 입력해 주세요";
     String SORT_BY_NOT_NULL = "정렬 기준은 필수입니다.";
     String SORT_DIRECTION_NOT_NULL = "정렬 방향은 필수입니다.";
     String START_DATE_NOT_NULL = "시작일을 입력해주세요";

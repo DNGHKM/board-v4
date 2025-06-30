@@ -1,6 +1,6 @@
 package com.boardv4.exception;
 
-import com.boardv4.controller.ApiResponseDTO;
+import com.boardv4.dto.ApiResponseDTO;
 import com.boardv4.exception.base.FieldValidationException;
 import com.boardv4.exception.base.ForbiddenException;
 import com.boardv4.exception.base.NotFoundException;

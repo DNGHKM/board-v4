@@ -1,11 +1,7 @@
 package com.boardv4.controller;
 
+import com.boardv4.controller.doc.FileApiDoc;
 import com.boardv4.service.PostFileService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -15,44 +11,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "파일 API", description = "게시글 첨부파일 다운로드 및 미리보기 기능을 제공합니다.")
 @RestController
 @RequestMapping("/api/v1/files")
 @AllArgsConstructor
 @Slf4j
-public class FileController {
+public class FileController implements FileApiDoc {
+
     private final PostFileService postFileService;
 
-    @Operation(
-            summary = "파일 다운로드",
-            description = "저장된 파일명을 기반으로 파일을 다운로드합니다. Content-Disposition 헤더로 첨부 파일로 처리됩니다."
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "파일 다운로드 성공"),
-            @ApiResponse(responseCode = "404", description = "파일을 찾을 수 없음")
-    })
     @GetMapping("/{savedFilename}")
-    public ResponseEntity<Resource> getPostView(@Parameter(description = "저장된 파일명(UUID.ext)", required = true,
-                                                            example = "d45a1a5e-84cd-4d0e-9b2e-fadf18428d55.pdf")
-                                                @PathVariable String savedFilename) {
-
+    public ResponseEntity<Resource> getPostView(@PathVariable String savedFilename) {
         return postFileService.download(savedFilename);
     }
 
-    @Operation(
-            summary = "파일 미리보기",
-            description = "이미지 파일 등의 미리보기를 제공합니다."
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "파일 미리보기 성공"),
-            @ApiResponse(responseCode = "404", description = "파일을 찾을 수 없음")
-    })
     @GetMapping("/preview/{savedFilename}")
-    public ResponseEntity<Resource> preview(@Parameter(description = "저장된 파일명(UUID.ext)",
-                                                        required = true,
-                                                        example = "d45a1a5e-84cd-4d0e-9b2e-fadf18428d55.pdf")
-                                            @PathVariable String savedFilename) {
-
+    public ResponseEntity<Resource> preview(@PathVariable String savedFilename) {
         return postFileService.preview(savedFilename);
     }
 }
