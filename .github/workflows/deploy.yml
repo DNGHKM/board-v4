@@ -17,6 +17,7 @@ jobs:
       # 2. Secret 파일 생성 (src/main/resources/)
       - name: Create secret.properties
         run: |
+          mkdir -p src/main/resources
           echo "${{ secrets.SECRET_PROPERTIES }}" > src/main/resources/secret.properties
 
       # 3. Gradle Wrapper 실행 권한 부여
@@ -34,14 +35,20 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # 6. docker-compose.yml 생성 (template → 실제 파일)
+      # 6. Docker 이미지 빌드 및 푸시
+      - name: Build and Push Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/board-v4:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/board-v4:latest
+
+      # 7. docker-compose.yml 생성 (template → 실제 파일)
       - name: Generate docker-compose.yml with secrets
         run: |
           sed -e "s|__MYSQL_ROOT_PASSWORD__|${{ secrets.MYSQL_ROOT_PASSWORD }}|g" \
               -e "s|__MYSQL_PASSWORD__|${{ secrets.MYSQL_PASSWORD }}|g" \
               docker-compose.yml.template > docker-compose.yml
 
-      # 7. EC2에 docker-compose.yml 전송
+      # 8. EC2에 docker-compose.yml 전송
       - name: Deploy docker-compose.yml to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -53,7 +60,7 @@ jobs:
           target: /home/kdh/docker/board-v4
           debug: true
 
-      # 8. EC2에서 docker-compose 실행
+      # 9. EC2에서 docker-compose 실행
       - name: Run Docker Compose on EC2
         uses: appleboy/ssh-action@v1.2.0
         with:
