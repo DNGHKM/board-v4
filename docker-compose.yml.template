@@ -17,20 +17,21 @@ services:
     networks:
       - board-network
 
-  mysql:
-    image: mysql:8.0
-    container_name: board-v4-mysql
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: __MYSQL_ROOT_PASSWORD__
-      MYSQL_DATABASE: board_v4
-      MYSQL_USER: board
-      MYSQL_PASSWORD: __MYSQL_PASSWORD__
-      TZ: Asia/Seoul
-    volumes:
-      - /home/kdh/docker/board-v4/mysql/data:/var/lib/mysql
-    networks:
-      - board-network
+    mysql:
+      image: mysql:8.0
+      container_name: board-v4-mysql
+      restart: always
+      environment:
+        MYSQL_ROOT_PASSWORD: __MYSQL_ROOT_PASSWORD__
+        MYSQL_DATABASE: board_v4
+        MYSQL_USER: board
+        MYSQL_PASSWORD: __MYSQL_PASSWORD__
+        TZ: Asia/Seoul
+      command: --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
+      volumes:
+        - /home/kdh/docker/board-v4/mysql/data:/var/lib/mysql
+      networks:
+        - board-network
 
 networks:
   board-network:
