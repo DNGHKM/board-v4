@@ -27,7 +27,10 @@ services:
       MYSQL_USER: board
       MYSQL_PASSWORD: __MYSQL_PASSWORD__
       TZ: Asia/Seoul
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_general_ci
+      - --skip-character-set-client-handshake
     volumes:
       - /home/kdh/docker/board-v4/mysql/data:/var/lib/mysql
     networks:
